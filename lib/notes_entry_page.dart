@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes_app/note.dart';
 import 'package:notes_app/note_notifier.dart';
 import 'package:provider/provider.dart';
 
@@ -17,46 +18,61 @@ class NoteEntryPage extends StatelessWidget {
       priority.value = value;
     }
 
+    String priorityString(priority) {
+      if (priority == 0)
+        return 'Mehhh!';
+      else if (priority == 1)
+        return 'Imp';
+      else if (priority == 2)
+        return 'Very Important!';
+      else
+        return 'Mehhh!';
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('New Note'),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(18.0),
-        child: Column(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                // border: OutlineInputBorder(
-                //   borderSide: BorderSide(),
-                // ),
-                hintText: 'Title',
-              ),
-              controller: titleController,
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<int>(
-              value: priority.value,
-              icon: Text('Priority'),
-              items: List.generate(
-                3,
-                (index) => DropdownMenuItem(
-                  value: (index + 1),
-                  child: Text((index + 1).toString()),
+      body: Theme(
+        data: ThemeData.dark(),
+        child: Padding(
+          padding: EdgeInsets.all(18.0),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  // border: OutlineInputBorder(
+                  //   borderSide: BorderSide(),
+                  // ),
+                  hintText: 'Title',
                 ),
+                controller: titleController,
               ),
-              onChanged: priorityValue,
-            ),
-            SizedBox(height: 20),
-            TextField(
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Taking note of...',
+              SizedBox(height: 20),
+              DropdownButtonFormField<int>(
+                value: priority.value,
+                icon: Text('Priority'),
+                items: List.generate(
+                  3,
+                  (index) => DropdownMenuItem(
+                    value: index,
+                    // child: Text((index + 1).toString()),
+                    child: Text(priorityString(index)),
+                  ),
+                ),
+                onChanged: priorityValue,
               ),
-              controller: bodyController,
-              maxLines: null,
-            ),
-          ],
+              SizedBox(height: 20),
+              TextField(
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: 'Taking note of...',
+                ),
+                controller: bodyController,
+                maxLines: null,
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -70,7 +86,7 @@ class NoteEntryPage extends StatelessWidget {
           );
           context.read<NoteNotifier>().addNote(note);
 
-          print(note.toString());
+          // print(note.toString());
           Navigator.of(context).pop();
         },
       ),
